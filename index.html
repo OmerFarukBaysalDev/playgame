@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎵 Kelime Tahmin Oyunu</title>
+    <title>🎵 Kelime Tahmin Oyunu · Ayarlı</title>
     <style>
         /* ─── RESET & BASE ─── */
         * {
@@ -21,17 +21,14 @@
             padding: 16px;
             color: #fff;
         }
-
-        /* ─── CONTAINER ─── */
         .game-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 820px;
             background: linear-gradient(145deg, #141a2b, #1a2140);
             border-radius: 48px;
             padding: 28px 24px 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.04);
             backdrop-filter: blur(2px);
-            transition: all 0.3s ease;
         }
 
         /* ─── HEADER ─── */
@@ -39,9 +36,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
         .header h1 {
             font-size: 24px;
@@ -55,18 +52,60 @@
             align-items: center;
             gap: 6px;
         }
-        .header h1 span {
-            font-size: 26px;
-            -webkit-text-fill-color: initial;
-        }
+        .header h1 span { font-size: 26px; -webkit-text-fill-color: initial; }
         .header .sub {
             font-size: 13px;
             color: #8892b0;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             padding: 4px 14px;
             border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            letter-spacing: 0.3px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ─── AYARLAR ─── */
+        .settings {
+            background: rgba(0,0,0,0.25);
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .settings label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #a8b2d1;
+            font-weight: 500;
+        }
+        .settings input {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 10px;
+            padding: 6px 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            width: 80px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .settings input:focus {
+            outline: none;
+            border-color: #f9d976;
+            box-shadow: 0 0 0 3px rgba(249,217,118,0.15);
+        }
+        .settings input[type="text"] {
+            width: 110px;
+        }
+        .settings .hint {
+            font-size: 11px;
+            color: #5a6a8a;
+            margin-left: -4px;
         }
 
         /* ─── SCOREBOARD ─── */
@@ -78,19 +117,19 @@
         }
         .team-card {
             flex: 1;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255,255,255,0.03);
             border-radius: 20px;
             padding: 14px 18px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
         }
         .team-card.active-team {
             border-color: #f9d976;
-            box-shadow: 0 0 30px rgba(249, 217, 118, 0.08);
-            background: rgba(249, 217, 118, 0.05);
+            box-shadow: 0 0 30px rgba(249,217,118,0.08);
+            background: rgba(249,217,118,0.05);
         }
         .team-card.active-team::after {
             content: '';
@@ -98,7 +137,7 @@
             inset: 0;
             border-radius: 20px;
             padding: 1px;
-            background: linear-gradient(135deg, rgba(249, 217, 118, 0.3), transparent);
+            background: linear-gradient(135deg, rgba(249,217,118,0.3), transparent);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -118,19 +157,15 @@
             margin-top: 2px;
             transition: all 0.2s ease;
         }
-        .team-card.team1 .team-score {
-            color: #64ffda;
-        }
-        .team-card.team2 .team-score {
-            color: #ff79c6;
-        }
+        .team-card.team1 .team-score { color: #64ffda; }
+        .team-card.team2 .team-score { color: #ff79c6; }
         .team-card .turn-badge {
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #f9d976;
-            background: rgba(249, 217, 118, 0.12);
+            background: rgba(249,217,118,0.12);
             padding: 2px 12px;
             border-radius: 20px;
             display: inline-block;
@@ -138,11 +173,9 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .team-card.active-team .turn-badge {
-            opacity: 1;
-        }
+        .team-card.active-team .turn-badge { opacity: 1; }
 
-        /* ─── TIMER & WORD COUNT ─── */
+        /* ─── STATS ─── */
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -164,31 +197,24 @@
             animation: pulse 0.6s ease-in-out infinite alternate;
         }
         .stats-bar .word-counter {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255,255,255,0.04);
             padding: 4px 16px;
             border-radius: 40px;
             font-size: 13px;
         }
-
         @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0.5;
-                transform: scale(0.96);
-            }
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(0.96); }
         }
 
         /* ─── WORD DISPLAY ─── */
         .word-display {
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0,0,0,0.35);
             border-radius: 28px;
             padding: 32px 16px;
             margin-bottom: 18px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.05);
             min-height: 130px;
             display: flex;
             flex-direction: column;
@@ -202,7 +228,7 @@
             font-weight: 800;
             letter-spacing: 1px;
             color: #f0f4ff;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
             transition: all 0.25s ease;
             word-break: break-word;
             line-height: 1.2;
@@ -215,12 +241,12 @@
         .word-display .category-tag {
             font-size: 12px;
             color: #64ffda;
-            background: rgba(100, 255, 218, 0.08);
+            background: rgba(100,255,218,0.08);
             padding: 2px 14px;
             border-radius: 40px;
             margin-top: 10px;
             letter-spacing: 0.5px;
-            border: 1px solid rgba(100, 255, 218, 0.08);
+            border: 1px solid rgba(100,255,218,0.08);
         }
         .word-display .turn-label {
             font-size: 14px;
@@ -261,9 +287,7 @@
             position: relative;
             overflow: hidden;
         }
-        .action-buttons button:active {
-            transform: scale(0.94);
-        }
+        .action-buttons button:active { transform: scale(0.94); }
         .action-buttons button:disabled {
             opacity: 0.35;
             cursor: not-allowed;
@@ -272,39 +296,35 @@
         .btn-correct {
             background: linear-gradient(135deg, #00b894, #00a381);
             color: #fff;
-            box-shadow: 0 6px 24px rgba(0, 184, 148, 0.25);
+            box-shadow: 0 6px 24px rgba(0,184,148,0.25);
         }
         .btn-correct:hover:not(:disabled) {
-            box-shadow: 0 8px 32px rgba(0, 184, 148, 0.4);
+            box-shadow: 0 8px 32px rgba(0,184,148,0.4);
             transform: translateY(-2px);
         }
-        .btn-correct:active:not(:disabled) {
-            transform: scale(0.94) !important;
-        }
-
+        .btn-correct:active:not(:disabled) { transform: scale(0.94) !important; }
         .btn-pass {
             background: linear-gradient(135deg, #636e72, #4a4f5a);
             color: #dfe6e9;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
         }
         .btn-pass:hover:not(:disabled) {
             background: linear-gradient(135deg, #747d82, #5a5f6a);
             transform: translateY(-2px);
         }
-
         .btn-endturn {
             background: linear-gradient(135deg, #e17055, #d63031);
             color: #fff;
-            box-shadow: 0 6px 24px rgba(214, 48, 49, 0.2);
+            box-shadow: 0 6px 24px rgba(214,48,49,0.2);
             flex: 0.6;
             min-width: 80px;
         }
         .btn-endturn:hover:not(:disabled) {
-            box-shadow: 0 8px 32px rgba(214, 48, 49, 0.35);
+            box-shadow: 0 8px 32px rgba(214,48,49,0.35);
             transform: translateY(-2px);
         }
 
-        /* ─── START / RESET ─── */
+        /* ─── CONTROLS ─── */
         .game-controls {
             display: flex;
             gap: 12px;
@@ -326,19 +346,19 @@
         .btn-start {
             background: linear-gradient(135deg, #f9d976, #f39b7b);
             color: #141a2b;
-            box-shadow: 0 6px 28px rgba(249, 217, 118, 0.2);
+            box-shadow: 0 6px 28px rgba(249,217,118,0.2);
         }
         .btn-start:hover {
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 10px 40px rgba(249, 217, 118, 0.3);
+            box-shadow: 0 10px 40px rgba(249,217,118,0.3);
         }
         .btn-reset {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255,255,255,0.06);
             color: #8892b0;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.06);
         }
         .btn-reset:hover {
-            background: rgba(255, 255, 255, 0.10);
+            background: rgba(255,255,255,0.10);
             color: #fff;
         }
 
@@ -348,28 +368,19 @@
             text-align: center;
             padding: 18px 12px 8px;
             border-radius: 24px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.3);
             margin-top: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .winner-overlay.show {
             display: block;
             animation: fadeSlideUp 0.6s ease;
         }
         @keyframes fadeSlideUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        .winner-overlay .trophy {
-            font-size: 48px;
-            margin-bottom: 4px;
-        }
+        .winner-overlay .trophy { font-size: 48px; margin-bottom: 4px; }
         .winner-overlay .winner-text {
             font-size: 26px;
             font-weight: 800;
@@ -386,105 +397,40 @@
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 600px) {
-            .game-container {
-                padding: 18px 14px 22px;
-                border-radius: 32px;
-            }
-            .header h1 {
-                font-size: 19px;
-            }
-            .header .sub {
-                font-size: 11px;
-                padding: 2px 10px;
-            }
-            .team-card {
-                padding: 10px 12px;
-            }
-            .team-score {
-                font-size: 28px;
-            }
-            .team-name {
-                font-size: 13px;
-            }
-            .word-display .word {
-                font-size: 34px;
-            }
-            .word-display {
-                padding: 22px 12px;
-                min-height: 100px;
-            }
-            .action-buttons button {
-                font-size: 15px;
-                padding: 14px 10px;
-                min-width: 80px;
-            }
-            .btn-endturn {
-                flex: 0.5;
-                min-width: 60px;
-            }
-            .stats-bar {
-                font-size: 12px;
-            }
-            .stats-bar .timer {
-                font-size: 17px;
-            }
-            .game-controls button {
-                padding: 10px 22px;
-                font-size: 14px;
-            }
-            .winner-overlay .winner-text {
-                font-size: 20px;
-            }
+            .game-container { padding: 18px 14px 22px; border-radius: 32px; }
+            .header h1 { font-size: 19px; }
+            .header .sub { font-size: 11px; padding: 2px 10px; }
+            .settings { flex-direction: column; align-items: stretch; gap: 10px; }
+            .settings label { justify-content: space-between; }
+            .settings input { width: 100% !important; max-width: 140px; }
+            .team-card { padding: 10px 12px; }
+            .team-score { font-size: 28px; }
+            .team-name { font-size: 13px; }
+            .word-display .word { font-size: 34px; }
+            .word-display { padding: 22px 12px; min-height: 100px; }
+            .action-buttons button { font-size: 15px; padding: 14px 10px; min-width: 80px; }
+            .btn-endturn { flex: 0.5; min-width: 60px; }
+            .stats-bar { font-size: 12px; }
+            .stats-bar .timer { font-size: 17px; }
+            .game-controls button { padding: 10px 22px; font-size: 14px; }
+            .winner-overlay .winner-text { font-size: 20px; }
         }
         @media (max-width: 400px) {
-            .scoreboard {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .team-card {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 14px;
-            }
-            .team-card .team-score {
-                font-size: 24px;
-                margin-top: 0;
-            }
-            .team-card .turn-badge {
-                font-size: 8px;
-            }
-            .word-display .word {
-                font-size: 28px;
-            }
-            .action-buttons {
-                gap: 8px;
-            }
-            .action-buttons button {
-                font-size: 13px;
-                padding: 12px 6px;
-                min-width: 60px;
-            }
-            .header h1 {
-                font-size: 16px;
-            }
+            .scoreboard { flex-direction: column; gap: 8px; }
+            .team-card { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; }
+            .team-card .team-score { font-size: 24px; margin-top: 0; }
+            .team-card .turn-badge { font-size: 8px; }
+            .word-display .word { font-size: 28px; }
+            .action-buttons { gap: 8px; }
+            .action-buttons button { font-size: 13px; padding: 12px 6px; min-width: 60px; }
+            .header h1 { font-size: 16px; }
         }
-
-        /* ─── SCROLLBAR ─── */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2d3658;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2d3658; border-radius: 10px; }
     </style>
 </head>
 <body>
-
     <div class="game-container" id="app">
         <!-- HEADER -->
         <div class="header">
@@ -492,15 +438,32 @@
             <span class="sub">🎧 müzikle · iki takım</span>
         </div>
 
+        <!-- AYARLAR -->
+        <div class="settings" id="settingsPanel">
+            <label>
+                ⏱ Süre (sn)
+                <input type="number" id="timeInput" value="60" min="10" max="300" step="5" />
+                <span class="hint">(10–300)</span>
+            </label>
+            <label>
+                🟢 Takım 1
+                <input type="text" id="team1NameInput" value="Takım 1" maxlength="20" />
+            </label>
+            <label>
+                🟣 Takım 2
+                <input type="text" id="team2NameInput" value="Takım 2" maxlength="20" />
+            </label>
+        </div>
+
         <!-- SCOREBOARD -->
         <div class="scoreboard">
             <div class="team-card team1" id="team1Card">
-                <div class="team-name">🟢 Takım 1</div>
+                <div class="team-name" id="team1NameLabel">🟢 Takım 1</div>
                 <div class="team-score" id="score1">0</div>
                 <div class="turn-badge">🔵 SIRA</div>
             </div>
             <div class="team-card team2" id="team2Card">
-                <div class="team-name">🟣 Takım 2</div>
+                <div class="team-name" id="team2NameLabel">🟣 Takım 2</div>
                 <div class="team-score" id="score2">0</div>
                 <div class="turn-badge">🔵 SIRA</div>
             </div>
@@ -546,200 +509,161 @@
         // ═══════════════════════════════════════════════════════════════
 
         const WORD_POOL = [
-            // ─ Hayvanlar ─
-            'köpek', 'kedi', 'kuş', 'balık', 'at', 'inek', 'koyun', 'keçi', 'tavuk',
-            'horoz', 'ördek', 'kaz', 'tavşan', 'fare', 'sincap', 'tilki', 'kurt',
-            'ayı', 'aslan', 'kaplan', 'fil', 'zürafa', 'maymun', 'penguen', 'kartal',
-            'şahin', 'baykuş', 'serçe', 'leylek', 'karınca', 'arı', 'kelebek',
-            'örümcek', 'salyangoz', 'yılan', 'kertenkele', 'kaplumbağa', 'timsah',
-            'yunus', 'balina', 'köpekbalığı', 'denizanası', 'ahtapot', 'yengeç',
-            'midye', 'istiridye', 'kalamar', 'denizatı', 'papağan', 'güvercin',
-            'karga', 'saksağan', 'bülbül', 'kanarya', 'akvaryum', 'hamster',
-            'kobay', 'çinçilla', 'geyik', 'ceylan', 'çita', 'panter', 'jaguar',
-            'puma', 'vaşak', 'sırtlan', 'mandril', 'lemur', 'koala', 'panda',
-            'kutup ayısı', 'mors', 'fok', 'denizkaplumbağası',
-
-            // ─ Meyveler ─
-            'elma', 'armut', 'muz', 'portakal', 'mandalina', 'limon', 'greyfurt',
-            'üzüm', 'çilek', 'ahududu', 'böğürtlen', 'yaban mersini', 'karpuz',
-            'kavun', 'şeftali', 'nektarin', 'kayısı', 'erik', 'kiraz', 'vişne',
-            'nar', 'incir', 'hurma', 'zeytin', 'avokado', 'mango', 'ananas',
-            'papaya', 'guava', 'kivi', 'cennet hurması', 'ejder meyvesi',
-            'passionfruit', 'karambola', 'rambutan', 'longan', 'pitaya',
-            'limonata', 'kokteyl', 'meyve salatası', 'reçel', 'marmelat',
-
-            // ─ Sebzeler ─
-            'domates', 'salatalık', 'biber', 'patlıcan', 'kabak', 'balkabağı',
-            'havuç', 'turp', 'pancar', 'soğan', 'sarımsak', 'pırasa', 'kereviz',
-            'maydanoz', 'dereotu', 'roka', 'marul', 'ıspanak', 'lahana', 'karnabahar',
-            'brokoli', 'bezelye', 'fasulye', 'nohut', 'mercimek', 'barbunya',
-            'enginar', 'kuşkonmaz', 'mantar', 'mısır', 'patates', 'tatlı patates',
-            'zencefil', 'zerdeçal', 'bamya', 'kıvırcık', 'taze soğan', 'fesleğen',
-            'nane', 'kekik', 'biberiye', 'adaçayı', 'defne',
-
-            // ─ Meslekler ─
-            'doktor', 'hemşire', 'avukat', 'hakim', 'savcı', 'polis', 'itfaiyeci',
-            'öğretmen', 'profesör', 'mühendis', 'mimar', 'tasarımcı', 'grafiker',
-            'programcı', 'analist', 'yönetici', 'muhasebeci', 'memur', 'bankacı',
-            'satış temsilcisi', 'pazarlamacı', 'reklamcı', 'gazeteci', 'yazar',
-            'şair', 'ressam', 'heykeltıraş', 'müzisyen', 'besteci', 'orkestra şefi',
-            'piyanist', 'kemanist', 'gitarist', 'davulcu', 'şarkıcı', 'dansçı',
-            'koreograf', 'tiyatrocu', 'sinemacı', 'yönetmen', 'senarist',
-            'yapımcı', 'editör', 'çevirmen', 'rehber', 'aşçı', 'pasta şefi',
-            'garson', 'barmen', 'pilot', 'hostes', 'kaptan', 'denizci',
-            'balıkçı', 'çiftçi', 'bahçıvan', 'veteriner', 'eczacı', 'diş hekimi',
-            'psikolog', 'psikiyatr', 'fizyoterapist', 'diyetisyen', 'sosyal hizmet uzmanı',
-
-            // ─ Ev eşyaları ─
-            'masa', 'sandalye', 'koltuk', 'kanape', 'yatak', 'dolap', 'komodin',
-            'gardırop', 'şifonyer', 'sehpa', 'raflar', 'kitaplık', 'ayna',
-            'tablo', 'vazo', 'lambader', 'avize', 'perde', 'halı', 'kilim',
-            'yastık', 'nevresim', 'çarşaf', 'battaniye', 'örgü', 'tül', 'kanepe',
-            'bebek odası', 'çalışma masası', 'şezlong', 'hamak', 'saksı',
-            'çiçeklik', 'mumluk', 'çerçeve', 'saat', 'terazi', 'termometre',
-
-            // ─ Yiyecekler ─
-            'ekmek', 'pide', 'simit', 'poğaça', 'börek', 'çörek', 'kek', 'pasta',
-            'dondurma', 'puding', 'muhallebi', 'kazandibi', 'sütlaç', 'tatlı',
-            'baklava', 'künefe', 'kadayıf', 'lokma', 'tulumba', 'şekerpare',
-            'peynir', 'yoğurt', 'ayran', 'çorba', 'pilav', 'makarna', 'kebap',
-            'köfte', 'tavuk', 'balık', 'et', 'sucuk', 'salam', 'jambon', 'pastırma',
-            'menemen', 'omlet', 'yumurta', 'salata', 'turşu', 'zeytinyağlı',
-            'dolma', 'sarma', 'lahmacun', 'pizza', 'burger', 'sandviç', 'tost',
-            'gözleme', 'katmer', 'bazlama', 'çiğ köfte', 'humus', 'cacık', 'tarator',
-
-            // ─ İçecekler ─
-            'su', 'maden suyu', 'çay', 'kahve', 'türk kahvesi', 'filtre kahve',
-            'expresso', 'latte', 'cappuccino', 'mocha', 'sıcak çikolata', 'salep',
-            'boza', 'şerbet', 'limonata', 'portakal suyu', 'elma suyu', 'vişne suyu',
-            'nar suyu', 'ayran', 'kefir', 'süt', 'ayran', 'şalgam', 'hardal',
-            'kola', 'gazoz', 'tonik', 'bira', 'şarap', 'rakı', 'viski', 'votka',
-            'kokteyl', 'margarita', 'mojito', 'bloody mary', 'sprite', 'fanta',
-
-            // ─ Spor ─
-            'futbol', 'basketbol', 'voleybol', 'hentbol', 'tenis', 'masa tenisi',
-            'badminton', 'yüzme', 'atletizm', 'koşu', 'maraton', 'bisiklet',
-            'dağcılık', 'kayak', 'snowboard', 'buz pateni', 'buz hokeyi',
-            'futbol', 'basketbol', 'voleybol', 'hentbol', 'tenis', 'masa tenisi',
-            'badminton', 'yüzme', 'atletizm', 'koşu', 'maraton', 'bisiklet',
-            'dağcılık', 'kayak', 'snowboard', 'buz pateni', 'buz hokeyi',
-            'okçuluk', 'eskrim', 'güreş', 'boks', 'judo', 'karate', 'tekvando',
-            'jimnastik', 'pilates', 'yoga', 'zumba', 'step', 'spinning',
-            'kürek', 'yelken', 'sörf', 'dalış', 'tüplü dalış', 'şnorkel',
-
-            // ─ Renkler ─
-            'kırmızı', 'mavi', 'yeşil', 'sarı', 'siyah', 'beyaz', 'mor', 'turuncu',
-            'pembe', 'kahverengi', 'gri', 'lacivert', 'turkuaz', 'fildişi', 'bej',
-            'krem', 'bordo', 'fuşya', 'limon', 'zeytin', 'hardal', 'nane',
-            'şarap', 'gümüş', 'altın', 'bakır', 'ten', 'somon', 'kiraz', 'gece mavisi',
-
-            // ─ Vücut ─
-            'baş', 'saç', 'yüz', 'göz', 'kaş', 'kirpik', 'burun', 'ağız', 'dudak',
-            'diş', 'dil', 'çene', 'kulak', 'boyun', 'omuz', 'kol', 'dirsek',
-            'bilek', 'el', 'parmak', 'başparmak', 'işaret parmağı', 'tırnak',
-            'sırt', 'göğüs', 'karın', 'bel', 'kalça', 'bacak', 'diz', 'ayak',
-            'topuk', 'ayak parmağı', 'kalp', 'akciğer', 'karaciğer', 'böbrek',
-            'mide', 'bağırsak', 'omurga', 'kas', 'kemik', 'eklem', 'damar',
-
-            // ─ Giyim ─
-            'mont', 'palto', 'ceket', 'hırka', 'kazak', 'tişört', 'gömlek',
-            'bluz', 'elbise', 'etek', 'pantolon', 'kot', 'şort', 'mayo',
-            'bikini', 'plaj', 'atlet', 'sütyen', 'külot', 'çorap', 'ayakkabı',
-            'bot', 'çizme', 'terlik', 'sandalet', 'spor ayakkabı', 'topuklu',
-            'babet', 'çanta', 'sırt çantası', 'valiz', 'şapka', 'beret', 'kasket',
-            'şal', 'atkı', 'eldiven', 'kemer', 'kravat', 'papyon', 'takım elbise',
-            'smokin', 'gelinlik', 'damatlık', 'peçe', 'türban', 'şalvar',
-
-            // ─ Taşıtlar ─
-            'araba', 'kamyon', 'otobüs', 'minibüs', 'tramvay', 'metro', 'tren',
-            'vapur', 'feribot', 'yat', 'tekne', 'motor', 'uçak', 'helikopter',
-            'jet', 'balon', 'zeplin', 'bisiklet', 'motorsiklet', 'kaykay',
-            'paten', 'kızak', 'kar arabası', 'ambulans', 'itfaiye', 'polis arabası',
-            'çekici', 'kamyonet', 'tır', 'römork', 'traktör', 'biçerdöver',
-            'tanker', 'kargo', 'yolcu', 'kabin',
-
-            // ─ Doğa ─
-            'orman', 'ağaç', 'çiçek', 'ot', 'dağ', 'tepe', 'ova', 'vadi', 'nehir',
-            'göl', 'deniz', 'okyanus', 'ada', 'kıyı', 'sahil', 'kumsal', 'kaya',
-            'taş', 'çakıl', 'toprak', 'yağmur', 'kar', 'dolu', 'rüzgar', 'fırtına',
-            'şimşek', 'gökkuşağı', 'bulut', 'güneş', 'ay', 'yıldız', 'gezegen',
-            'güneş sistemi', 'samanyolu', 'meteor', 'volkan', 'deprem', 'tsunami',
-            'sel', 'kuraklık', 'mevsim', 'bahar', 'yaz', 'sonbahar', 'kış',
-
-            // ─ Duygular ─
-            'mutluluk', 'üzüntü', 'öfke', 'korku', 'şaşkınlık', 'tiksinti',
-            'utanç', 'suçluluk', 'gurur', 'umut', 'umutsuzluk', 'sevinç',
-            'heyecan', 'huzur', 'rahatlık', 'huzursuzluk', 'kaygı', 'endişe',
-            'merak', 'coşku', 'hayranlık', 'saygı', 'sevgi', 'nefret', 'özlem',
-            'hasret', 'yalnızlık', 'arkadaşlık', 'empati', 'sempati', 'dostluk',
-
-            // ─ Fiiller (eylemler) ─
-            'yürümek', 'koşmak', 'zıplamak', 'uçmak', 'yüzmek', 'tırmanmak',
-            'oturmak', 'kalkmak', 'yatmak', 'uyumak', 'uyanmak', 'yemek', 'içmek',
-            'konuşmak', 'söylemek', 'anlatmak', 'göstermek', 'bakmak', 'görmek',
-            'duymak', 'hissetmek', 'düşünmek', 'hayal etmek', 'planlamak',
-            'yapmak', 'etmek', 'tutmak', 'bırakmak', 'taşımak', 'kaldırmak',
-            'itmek', 'çekmek', 'vurmak', 'kırmak', 'fırlatmak', 'yakalamak',
-            'kaçmak', 'saklanmak', 'bulmak', 'aramak', 'sormak', 'cevaplamak',
-            'gülmek', 'ağlamak', 'bağırmak', 'fısıldamak', 'ısırmak', 'emmek',
-            'koklamak', 'dokunmak', 'öpücük', 'sarılmak', 'oynamak', 'dans etmek',
-            'şarkı söylemek', 'müzik aleti çalmak', 'resim yapmak', 'yazmak',
-            'okumak', 'çalışmak', 'öğrenmek', 'öğretmek', 'yemek pişirmek',
-            'temizlemek', 'yıkamak', 'ütülemek', 'süpürmek', 'pası silmek',
-            'bahçe işleri', 'alışveriş yapmak', 'para harcamak', 'tasarruf etmek',
-
-            // ─ Sıfatlar ─
-            'büyük', 'küçük', 'uzun', 'kısa', 'geniş', 'dar', 'yüksek', 'alçak',
-            'derin', 'sığ', 'hızlı', 'yavaş', 'sıcak', 'soğuk', 'ılık', 'donuk',
-            'parlak', 'soluk', 'koyu', 'açık', 'düzgün', 'pürüzlü', 'yumuşak',
-            'sert', 'hafif', 'ağır', 'keskin', 'kör', 'tatlı', 'ekşi', 'tuzlu',
-            'acı', 'baharatlı', 'lezzetli', 'kötü', 'güzel', 'çirkin', 'yeni',
-            'eski', 'genç', 'yaşlı', 'akıllı', 'zeki', 'aptal', 'komik', 'ciddi',
-            'mutlu', 'mutsuz', 'kızgın', 'sakin', 'hareketli', 'sessiz', 'gürültülü',
-            'temiz', 'kirli', 'düzenli', 'dağınık', 'basit', 'karmaşık',
-            'kolay', 'zor', 'önemli', 'önemsiz', 'faydalı', 'zararsız',
-
-            // ─ Ekstra günlük kelimeler ─
-            'kalem', 'defter', 'kitap', 'silgi', 'pergel', 'çizgi', 'kağıt',
-            'zarf', 'pul', 'mektup', 'kart', 'kutu', 'poşet', 'şişe', 'kavanoz',
-            'tava', 'tencere', 'çatal', 'kaşık', 'bıçak', 'tabak', 'bardak',
-            'finjan', 'sürahi', 'güğüm', 'maşrapa', 'fincan', 'tepsi', 'saç teli',
-            'iğne', 'iplik', 'makas', 'kumaş', 'yorgan', 'çamaşır', 'leke',
-            'cam', 'kapı', 'pencere', 'merdiven', 'asansör', 'kapı kolu',
-            'zil', 'kilit', 'anahtar', 'kablo', 'pil', 'priz', 'ampul', 'düğme',
-            'kumanda', 'telefon', 'bilgisayar', 'televizyon', 'radyo', 'hoparlör',
-            'kulaklık', 'mikrofon', 'kamera', 'fotoğraf', 'video', 'oyun', 'konsol',
-            'sanal gerçeklik', 'robot', 'dron', 'araba', 'tren', 'uçak', 'roket',
-            'uzay', 'gökyüzü', 'deniz', 'orman', 'şehir', 'köy', 'kasaba',
-            'mahalle', 'cadde', 'sokak', 'köprü', 'kavşak', 'trafik', 'ışık',
-            'park', 'bahçe', 'okul', 'hastane', 'havalimanı', 'gar',
-            'sinema', 'tiyatro', 'müze', 'kütüphane', 'spor salonu', 'yüzme havuzu',
-            'lokanta', 'kafe', 'bar', 'pastane', 'market', 'alışveriş merkezi'
+            'köpek','kedi','kuş','balık','at','inek','koyun','keçi','tavuk',
+            'horoz','ördek','kaz','tavşan','fare','sincap','tilki','kurt',
+            'ayı','aslan','kaplan','fil','zürafa','maymun','penguen','kartal',
+            'şahin','baykuş','serçe','leylek','karınca','arı','kelebek',
+            'örümcek','salyangoz','yılan','kertenkele','kaplumbağa','timsah',
+            'yunus','balina','köpekbalığı','denizanası','ahtapot','yengeç',
+            'midye','istiridye','kalamar','denizatı','papağan','güvercin',
+            'karga','saksağan','bülbül','kanarya','akvaryum','hamster',
+            'kobay','çinçilla','geyik','ceylan','çita','panter','jaguar',
+            'puma','vaşak','sırtlan','mandril','lemur','koala','panda',
+            'kutup ayısı','mors','fok','denizkaplumbağası',
+            'elma','armut','muz','portakal','mandalina','limon','greyfurt',
+            'üzüm','çilek','ahududu','böğürtlen','yaban mersini','karpuz',
+            'kavun','şeftali','nektarin','kayısı','erik','kiraz','vişne',
+            'nar','incir','hurma','zeytin','avokado','mango','ananas',
+            'papaya','guava','kivi','cennet hurması','ejder meyvesi',
+            'passionfruit','karambola','rambutan','longan','pitaya',
+            'limonata','kokteyl','meyve salatası','reçel','marmelat',
+            'domates','salatalık','biber','patlıcan','kabak','balkabağı',
+            'havuç','turp','pancar','soğan','sarımsak','pırasa','kereviz',
+            'maydanoz','dereotu','roka','marul','ıspanak','lahana','karnabahar',
+            'brokoli','bezelye','fasulye','nohut','mercimek','barbunya',
+            'enginar','kuşkonmaz','mantar','mısır','patates','tatlı patates',
+            'zencefil','zerdeçal','bamya','kıvırcık','taze soğan','fesleğen',
+            'nane','kekik','biberiye','adaçayı','defne',
+            'doktor','hemşire','avukat','hakim','savcı','polis','itfaiyeci',
+            'öğretmen','profesör','mühendis','mimar','tasarımcı','grafiker',
+            'programcı','analist','yönetici','muhasebeci','memur','bankacı',
+            'satış temsilcisi','pazarlamacı','reklamcı','gazeteci','yazar',
+            'şair','ressam','heykeltıraş','müzisyen','besteci','orkestra şefi',
+            'piyanist','kemanist','gitarist','davulcu','şarkıcı','dansçı',
+            'koreograf','tiyatrocu','sinemacı','yönetmen','senarist',
+            'yapımcı','editör','çevirmen','rehber','aşçı','pasta şefi',
+            'garson','barmen','pilot','hostes','kaptan','denizci',
+            'balıkçı','çiftçi','bahçıvan','veteriner','eczacı','diş hekimi',
+            'psikolog','psikiyatr','fizyoterapist','diyetisyen','sosyal hizmet uzmanı',
+            'masa','sandalye','koltuk','kanape','yatak','dolap','komodin',
+            'gardırop','şifonyer','sehpa','raflar','kitaplık','ayna',
+            'tablo','vazo','lambader','avize','perde','halı','kilim',
+            'yastık','nevresim','çarşaf','battaniye','örgü','tül','kanepe',
+            'bebek odası','çalışma masası','şezlong','hamak','saksı',
+            'çiçeklik','mumluk','çerçeve','saat','terazi','termometre',
+            'ekmek','pide','simit','poğaça','börek','çörek','kek','pasta',
+            'dondurma','puding','muhallebi','kazandibi','sütlaç','tatlı',
+            'baklava','künefe','kadayıf','lokma','tulumba','şekerpare',
+            'peynir','yoğurt','ayran','çorba','pilav','makarna','kebap',
+            'köfte','tavuk','balık','et','sucuk','salam','jambon','pastırma',
+            'menemen','omlet','yumurta','salata','turşu','zeytinyağlı',
+            'dolma','sarma','lahmacun','pizza','burger','sandviç','tost',
+            'gözleme','katmer','bazlama','çiğ köfte','humus','cacık','tarator',
+            'su','maden suyu','çay','kahve','türk kahvesi','filtre kahve',
+            'expresso','latte','cappuccino','mocha','sıcak çikolata','salep',
+            'boza','şerbet','limonata','portakal suyu','elma suyu','vişne suyu',
+            'nar suyu','ayran','kefir','süt','ayran','şalgam','hardal',
+            'kola','gazoz','tonik','bira','şarap','rakı','viski','votka',
+            'kokteyl','margarita','mojito','bloody mary','sprite','fanta',
+            'futbol','basketbol','voleybol','hentbol','tenis','masa tenisi',
+            'badminton','yüzme','atletizm','koşu','maraton','bisiklet',
+            'dağcılık','kayak','snowboard','buz pateni','buz hokeyi',
+            'okçuluk','eskrim','güreş','boks','judo','karate','tekvando',
+            'jimnastik','pilates','yoga','zumba','step','spinning',
+            'kürek','yelken','sörf','dalış','tüplü dalış','şnorkel',
+            'kırmızı','mavi','yeşil','sarı','siyah','beyaz','mor','turuncu',
+            'pembe','kahverengi','gri','lacivert','turkuaz','fildişi','bej',
+            'krem','bordo','fuşya','limon','zeytin','hardal','nane',
+            'şarap','gümüş','altın','bakır','ten','somon','kiraz','gece mavisi',
+            'baş','saç','yüz','göz','kaş','kirpik','burun','ağız','dudak',
+            'diş','dil','çene','kulak','boyun','omuz','kol','dirsek',
+            'bilek','el','parmak','başparmak','işaret parmağı','tırnak',
+            'sırt','göğüs','karın','bel','kalça','bacak','diz','ayak',
+            'topuk','ayak parmağı','kalp','akciğer','karaciğer','böbrek',
+            'mide','bağırsak','omurga','kas','kemik','eklem','damar',
+            'mont','palto','ceket','hırka','kazak','tişört','gömlek',
+            'bluz','elbise','etek','pantolon','kot','şort','mayo',
+            'bikini','plaj','atlet','sütyen','külot','çorap','ayakkabı',
+            'bot','çizme','terlik','sandalet','spor ayakkabı','topuklu',
+            'babet','çanta','sırt çantası','valiz','şapka','beret','kasket',
+            'şal','atkı','eldiven','kemer','kravat','papyon','takım elbise',
+            'smokin','gelinlik','damatlık','peçe','türban','şalvar',
+            'araba','kamyon','otobüs','minibüs','tramvay','metro','tren',
+            'vapur','feribot','yat','tekne','motor','uçak','helikopter',
+            'jet','balon','zeplin','bisiklet','motorsiklet','kaykay',
+            'paten','kızak','kar arabası','ambulans','itfaiye','polis arabası',
+            'çekici','kamyonet','tır','römork','traktör','biçerdöver',
+            'tanker','kargo','yolcu','kabin',
+            'orman','ağaç','çiçek','ot','dağ','tepe','ova','vadi','nehir',
+            'göl','deniz','okyanus','ada','kıyı','sahil','kumsal','kaya',
+            'taş','çakıl','toprak','yağmur','kar','dolu','rüzgar','fırtına',
+            'şimşek','gökkuşağı','bulut','güneş','ay','yıldız','gezegen',
+            'güneş sistemi','samanyolu','meteor','volkan','deprem','tsunami',
+            'sel','kuraklık','mevsim','bahar','yaz','sonbahar','kış',
+            'mutluluk','üzüntü','öfke','korku','şaşkınlık','tiksinti',
+            'utanç','suçluluk','gurur','umut','umutsuzluk','sevinç',
+            'heyecan','huzur','rahatlık','huzursuzluk','kaygı','endişe',
+            'merak','coşku','hayranlık','saygı','sevgi','nefret','özlem',
+            'hasret','yalnızlık','arkadaşlık','empati','sempati','dostluk',
+            'yürümek','koşmak','zıplamak','uçmak','yüzmek','tırmanmak',
+            'oturmak','kalkmak','yatmak','uyumak','uyanmak','yemek','içmek',
+            'konuşmak','söylemek','anlatmak','göstermek','bakmak','görmek',
+            'duymak','hissetmek','düşünmek','hayal etmek','planlamak',
+            'yapmak','etmek','tutmak','bırakmak','taşımak','kaldırmak',
+            'itmek','çekmek','vurmak','kırmak','fırlatmak','yakalamak',
+            'kaçmak','saklanmak','bulmak','aramak','sormak','cevaplamak',
+            'gülmek','ağlamak','bağırmak','fısıldamak','ısırmak','emmek',
+            'koklamak','dokunmak','öpücük','sarılmak','oynamak','dans etmek',
+            'şarkı söylemek','müzik aleti çalmak','resim yapmak','yazmak',
+            'okumak','çalışmak','öğrenmek','öğretmek','yemek pişirmek',
+            'temizlemek','yıkamak','ütülemek','süpürmek','pası silmek',
+            'bahçe işleri','alışveriş yapmak','para harcamak','tasarruf etmek',
+            'büyük','küçük','uzun','kısa','geniş','dar','yüksek','alçak',
+            'derin','sığ','hızlı','yavaş','sıcak','soğuk','ılık','donuk',
+            'parlak','soluk','koyu','açık','düzgün','pürüzlü','yumuşak',
+            'sert','hafif','ağır','keskin','kör','tatlı','ekşi','tuzlu',
+            'acı','baharatlı','lezzetli','kötü','güzel','çirkin','yeni',
+            'eski','genç','yaşlı','akıllı','zeki','aptal','komik','ciddi',
+            'mutlu','mutsuz','kızgın','sakin','hareketli','sessiz','gürültülü',
+            'temiz','kirli','düzenli','dağınık','basit','karmaşık',
+            'kolay','zor','önemli','önemsiz','faydalı','zararsız',
+            'kalem','defter','kitap','silgi','pergel','çizgi','kağıt',
+            'zarf','pul','mektup','kart','kutu','poşet','şişe','kavanoz',
+            'tava','tencere','çatal','kaşık','bıçak','tabak','bardak',
+            'finjan','sürahi','güğüm','maşrapa','fincan','tepsi','saç teli',
+            'iğne','iplik','makas','kumaş','yorgan','çamaşır','leke',
+            'cam','kapı','pencere','merdiven','asansör','kapı kolu',
+            'zil','kilit','anahtar','kablo','pil','priz','ampul','düğme',
+            'kumanda','telefon','bilgisayar','televizyon','radyo','hoparlör',
+            'kulaklık','mikrofon','kamera','fotoğraf','video','oyun','konsol',
+            'sanal gerçeklik','robot','dron','araba','tren','uçak','roket',
+            'uzay','gökyüzü','deniz','orman','şehir','köy','kasaba',
+            'mahalle','cadde','sokak','köprü','kavşak','trafik','ışık',
+            'park','bahçe','okul','hastane','havalimanı','gar',
+            'sinema','tiyatro','müze','kütüphane','spor salonu','yüzme havuzu',
+            'lokanta','kafe','bar','pastane','market','alışveriş merkezi'
         ];
 
-        // ─ Kategoriler (görsel zenginlik için) ─
+        // ─ Kategori eşleştirme (görsellik)
         const CATEGORY_MAP = {
-            'köpek': '🐾 Hayvan', 'kedi': '🐾 Hayvan', 'kuş': '🐾 Hayvan',
-            'elma': '🍎 Meyve', 'armut': '🍎 Meyve', 'muz': '🍎 Meyve',
-            'domates': '🥗 Sebze', 'salatalık': '🥗 Sebze', 'biber': '🥗 Sebze',
-            'doktor': '💼 Meslek', 'hemşire': '💼 Meslek', 'avukat': '💼 Meslek',
-            'masa': '🏠 Ev', 'sandalye': '🏠 Ev', 'koltuk': '🏠 Ev',
-            'ekmek': '🍞 Yiyecek', 'pide': '🍞 Yiyecek', 'simit': '🍞 Yiyecek',
-            'su': '🥤 İçecek', 'çay': '🥤 İçecek', 'kahve': '🥤 İçecek',
-            'futbol': '⚽ Spor', 'basketbol': '⚽ Spor', 'yüzme': '⚽ Spor',
-            'kırmızı': '🎨 Renk', 'mavi': '🎨 Renk', 'yeşil': '🎨 Renk',
-            'baş': '🦴 Vücut', 'göz': '🦴 Vücut', 'burun': '🦴 Vücut',
-            'mont': '👕 Giyim', 'ceket': '👕 Giyim', 'gömlek': '👕 Giyim',
-            'araba': '🚗 Taşıt', 'kamyon': '🚗 Taşıt', 'otobüs': '🚗 Taşıt',
-            'orman': '🌿 Doğa', 'ağaç': '🌿 Doğa', 'çiçek': '🌿 Doğa',
-            'mutluluk': '💖 Duygu', 'üzüntü': '💖 Duygu', 'öfke': '💖 Duygu',
-            'yürümek': '🏃 Fiil', 'koşmak': '🏃 Fiil', 'zıplamak': '🏃 Fiil',
-            'büyük': '📐 Sıfat', 'küçük': '📐 Sıfat', 'uzun': '📐 Sıfat',
+            'köpek':'🐾 Hayvan','kedi':'🐾 Hayvan','kuş':'🐾 Hayvan',
+            'elma':'🍎 Meyve','armut':'🍎 Meyve','muz':'🍎 Meyve',
+            'domates':'🥗 Sebze','salatalık':'🥗 Sebze','biber':'🥗 Sebze',
+            'doktor':'💼 Meslek','hemşire':'💼 Meslek','avukat':'💼 Meslek',
+            'masa':'🏠 Ev','sandalye':'🏠 Ev','koltuk':'🏠 Ev',
+            'ekmek':'🍞 Yiyecek','pide':'🍞 Yiyecek','simit':'🍞 Yiyecek',
+            'su':'🥤 İçecek','çay':'🥤 İçecek','kahve':'🥤 İçecek',
+            'futbol':'⚽ Spor','basketbol':'⚽ Spor','yüzme':'⚽ Spor',
+            'kırmızı':'🎨 Renk','mavi':'🎨 Renk','yeşil':'🎨 Renk',
+            'baş':'🦴 Vücut','göz':'🦴 Vücut','burun':'🦴 Vücut',
+            'mont':'👕 Giyim','ceket':'👕 Giyim','gömlek':'👕 Giyim',
+            'araba':'🚗 Taşıt','kamyon':'🚗 Taşıt','otobüs':'🚗 Taşıt',
+            'orman':'🌿 Doğa','ağaç':'🌿 Doğa','çiçek':'🌿 Doğa',
+            'mutluluk':'💖 Duygu','üzüntü':'💖 Duygu','öfke':'💖 Duygu',
+            'yürümek':'🏃 Fiil','koşmak':'🏃 Fiil','zıplamak':'🏃 Fiil',
+            'büyük':'📐 Sıfat','küçük':'📐 Sıfat','uzun':'📐 Sıfat',
         };
-
-        function getCategory(word) {
-            return CATEGORY_MAP[word] || '🎯 Kelime';
-        }
+        function getCategory(word) { return CATEGORY_MAP[word] || '🎯 Kelime'; }
 
         // ═══════════════════════════════════════════════════════════════
         //  2.  OYUN DURUMU
@@ -750,27 +674,30 @@
             currentIndex: 0,
             team1Score: 0,
             team2Score: 0,
-            currentTeam: 1, // 1 veya 2
+            currentTeam: 1,
             isPlaying: false,
             isTurnActive: false,
             timer: null,
             timeLeft: 60,
             maxTime: 60,
             totalWords: 0,
-            usedWords: [],
             turnWords: [],
             gameEnded: false,
+            team1Name: 'Takım 1',
+            team2Name: 'Takım 2',
         };
 
         // ═══════════════════════════════════════════════════════════════
         //  3.  DOM REFERANSLARI
         // ═══════════════════════════════════════════════════════════════
 
-        const $ = (id) => document.getElementById(id);
+        const $ = id => document.getElementById(id);
         const score1El = $('score1');
         const score2El = $('score2');
         const team1Card = $('team1Card');
         const team2Card = $('team2Card');
+        const team1NameLabel = $('team1NameLabel');
+        const team2NameLabel = $('team2NameLabel');
         const wordText = $('wordText');
         const categoryTag = $('categoryTag');
         const turnLabel = $('turnLabel');
@@ -784,6 +711,9 @@
         const winnerOverlay = $('winnerOverlay');
         const winnerText = $('winnerText');
         const winnerScore = $('winnerScore');
+        const timeInput = $('timeInput');
+        const team1NameInput = $('team1NameInput');
+        const team2NameInput = $('team2NameInput');
 
         // ═══════════════════════════════════════════════════════════════
         //  4.  YARDIMCI FONKSİYONLAR
@@ -791,20 +721,35 @@
 
         function shuffle(arr) {
             const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
+            for (let i = a.length-1; i>0; i--) {
+                const j = Math.floor(Math.random()*(i+1));
+                [a[i],a[j]] = [a[j],a[i]];
             }
             return a;
         }
-
         function getRandomWords(count) {
             const shuffled = shuffle(WORD_POOL);
             return shuffled.slice(0, count);
         }
-
         function formatTime(seconds) {
             return Math.max(0, Math.ceil(seconds));
+        }
+
+        // ─ Ayarları oku ve state'e yaz ─
+        function loadSettings() {
+            let t = parseInt(timeInput.value, 10);
+            if (isNaN(t) || t < 10) t = 60;
+            if (t > 300) t = 300;
+            timeInput.value = t;
+            state.maxTime = t;
+            state.timeLeft = t;
+
+            const t1 = team1NameInput.value.trim() || 'Takım 1';
+            const t2 = team2NameInput.value.trim() || 'Takım 2';
+            state.team1Name = t1;
+            state.team2Name = t2;
+            team1NameLabel.textContent = `🟢 ${t1}`;
+            team2NameLabel.textContent = `🟣 ${t2}`;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -812,36 +757,33 @@
         // ═══════════════════════════════════════════════════════════════
 
         function updateUI() {
-            // Skorlar
             score1El.textContent = state.team1Score;
             score2El.textContent = state.team2Score;
 
-            // Aktif takım vurgusu
             team1Card.classList.toggle('active-team', state.currentTeam === 1);
             team2Card.classList.toggle('active-team', state.currentTeam === 2);
 
-            // Buton durumları
             const canAct = state.isPlaying && state.isTurnActive && !state.gameEnded;
             btnCorrect.disabled = !canAct || state.currentIndex >= state.turnWords.length;
             btnPass.disabled = !canAct || state.currentIndex >= state.turnWords.length;
             btnEndTurn.disabled = !canAct;
 
-            // Kelime gösterimi
             if (state.isPlaying && state.isTurnActive && state.currentIndex < state.turnWords.length) {
                 const word = state.turnWords[state.currentIndex];
                 wordText.textContent = word;
                 wordText.className = 'word';
                 categoryTag.textContent = getCategory(word);
-                turnLabel.textContent = `🟢 ${state.currentTeam === 1 ? 'Takım 1' : 'Takım 2'} açıklıyor...`;
+                const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
+                turnLabel.textContent = `🟢 ${teamName} açıklıyor...`;
             } else if (state.isPlaying && state.isTurnActive && state.currentIndex >= state.turnWords.length) {
                 wordText.textContent = '🎉 Tüm kelimeler tamam!';
                 wordText.className = 'word hint';
                 categoryTag.textContent = '✅ Tur bitti';
-                turnLabel.textContent = `🏁 ${state.currentTeam === 1 ? 'Takım 1' : 'Takım 2'} hazır!`;
+                turnLabel.textContent = `🏁 ${state.currentTeam === 1 ? state.team1Name : state.team2Name} hazır!`;
                 btnCorrect.disabled = true;
                 btnPass.disabled = true;
             } else if (state.gameEnded) {
-                // kazanan overlay zaten gösteriliyor
+                // kazanan overlay gösteriliyor
             } else {
                 wordText.textContent = state.isPlaying ? '⏳ Bekleyin...' : '🎯 Başlamak için';
                 wordText.className = 'word hint';
@@ -849,16 +791,13 @@
                 turnLabel.textContent = state.isPlaying ? '⏳ Tur hazırlanıyor...' : '🔵 Hazır mısınız?';
             }
 
-            // Timer
             timerDisplay.textContent = `⏱ ${formatTime(state.timeLeft)}`;
             timerDisplay.classList.toggle('warning', state.timeLeft <= 10 && state.isPlaying);
 
-            // Kelime sayacı
             const total = state.turnWords.length;
             const current = Math.min(state.currentIndex + 1, total);
             wordCounter.textContent = `📖 ${total > 0 ? current : 0} / ${total}`;
 
-            // Winner overlay
             if (state.gameEnded) {
                 winnerOverlay.classList.add('show');
             } else {
@@ -867,7 +806,6 @@
         }
 
         function startGame() {
-            // Eski oyunu temizle
             stopTimer();
             state.gameEnded = false;
             state.team1Score = 0;
@@ -877,7 +815,9 @@
             state.isPlaying = true;
             state.isTurnActive = false;
 
-            // 20 kelime hazırla (her takım için aynı havuzdan farklı sırada)
+            // Ayarları yükle
+            loadSettings();
+
             const raw = getRandomWords(20);
             state.turnWords = raw;
             state.totalWords = raw.length;
@@ -888,19 +828,14 @@
             btnStart.textContent = '⏳ Oynanıyor...';
             btnStart.disabled = true;
 
-            // İlk turu başlat
             startTurn();
         }
 
         function startTurn() {
             if (state.gameEnded) return;
-
             stopTimer();
 
-            // Takım değişimi kontrolü
-            // Eğer currentIndex tüm kelimeleri geçtiyse veya tur bitmişse
             if (state.currentIndex >= state.turnWords.length) {
-                // Diğer takıma geç
                 switchTeam();
                 return;
             }
@@ -908,13 +843,11 @@
             state.isTurnActive = true;
             state.timeLeft = state.maxTime;
 
-            // Timer'ı başlat
             state.timer = setInterval(() => {
                 state.timeLeft -= 0.3;
                 if (state.timeLeft <= 0) {
                     state.timeLeft = 0;
                     updateUI();
-                    // Süre doldu, turu bitir
                     endTurn();
                 } else {
                     updateUI();
@@ -927,14 +860,12 @@
         function switchTeam() {
             state.currentTeam = state.currentTeam === 1 ? 2 : 1;
             state.currentIndex = 0;
-            // Yeni kelime listesi hazırla (aynı havuzdan farklı sırada)
             const raw = getRandomWords(20);
             state.turnWords = raw;
             state.totalWords = raw.length;
             state.timeLeft = state.maxTime;
             state.isTurnActive = true;
 
-            // Timer'ı yeniden başlat
             stopTimer();
             state.timer = setInterval(() => {
                 state.timeLeft -= 0.3;
@@ -954,23 +885,15 @@
             if (!state.isTurnActive || state.gameEnded) return;
             if (state.currentIndex >= state.turnWords.length) return;
 
-            // Puan ekle
-            if (state.currentTeam === 1) {
-                state.team1Score += 1;
-            } else {
-                state.team2Score += 1;
-            }
+            if (state.currentTeam === 1) state.team1Score += 1;
+            else state.team2Score += 1;
 
-            // Sonraki kelime
             state.currentIndex += 1;
 
-            // Kelimeler bitti mi?
             if (state.currentIndex >= state.turnWords.length) {
-                // Tüm kelimeler bitti, turu bitir
                 endTurn();
             } else {
                 updateUI();
-                // Timer sıfırlanmaz, devam eder
             }
         }
 
@@ -978,9 +901,7 @@
             if (!state.isTurnActive || state.gameEnded) return;
             if (state.currentIndex >= state.turnWords.length) return;
 
-            // Geç, puan yok
             state.currentIndex += 1;
-
             if (state.currentIndex >= state.turnWords.length) {
                 endTurn();
             } else {
@@ -990,18 +911,13 @@
 
         function endTurn() {
             if (state.gameEnded) return;
-
             stopTimer();
             state.isTurnActive = false;
             updateUI();
 
-            // Takım değiştir veya oyunu bitir
             if (state.currentTeam === 1) {
-                // 1. takımın turu bitti, 2. takıma geç
-                // Ama önce 1. takımın puanını kaydet
                 state.currentTeam = 2;
                 state.currentIndex = 0;
-                // Yeni kelime listesi
                 const raw = getRandomWords(20);
                 state.turnWords = raw;
                 state.totalWords = raw.length;
@@ -1019,10 +935,8 @@
                         updateUI();
                     }
                 }, 300);
-
                 updateUI();
             } else {
-                // 2. takımın turu bitti, oyun bitti
                 endGame();
             }
         }
@@ -1035,25 +949,22 @@
             btnStart.textContent = '🔄 Tekrar Oyna';
             btnStart.disabled = false;
 
-            // Kazananı belirle
             let winner = '';
             if (state.team1Score > state.team2Score) {
-                winner = '🏆 Takım 1 Kazandı!';
+                winner = `🏆 ${state.team1Name} Kazandı!`;
             } else if (state.team2Score > state.team1Score) {
-                winner = '🏆 Takım 2 Kazandı!';
+                winner = `🏆 ${state.team2Name} Kazandı!`;
             } else {
                 winner = '🤝 Beraberlik!';
             }
             winnerText.textContent = winner;
-            winnerScore.textContent = `Takım 1: ${state.team1Score}  |  Takım 2: ${state.team2Score}`;
+            winnerScore.textContent = `${state.team1Name}: ${state.team1Score}  |  ${state.team2Name}: ${state.team2Score}`;
             winnerOverlay.classList.add('show');
 
-            // Kelime gösterimini güncelle
             wordText.textContent = '🏁 Oyun Bitti';
             wordText.className = 'word hint';
             categoryTag.textContent = '🎯 Tebrikler!';
             turnLabel.textContent = '🏆';
-
             updateUI();
         }
 
@@ -1073,9 +984,10 @@
             state.team2Score = 0;
             state.currentTeam = 1;
             state.currentIndex = 0;
-            state.timeLeft = state.maxTime;
             state.turnWords = [];
             state.totalWords = 0;
+            loadSettings(); // ayarları tazele
+            state.timeLeft = state.maxTime;
 
             winnerOverlay.classList.remove('show');
             btnStart.textContent = '🚀 OYUNU BAŞLAT';
@@ -1088,9 +1000,13 @@
             wordText.className = 'word hint';
             categoryTag.textContent = '🎯 oyuna basla';
             turnLabel.textContent = '🔵 Hazır mısınız?';
-            timerDisplay.textContent = '⏱ 60';
+            timerDisplay.textContent = `⏱ ${state.maxTime}`;
             timerDisplay.classList.remove('warning');
             wordCounter.textContent = '📖 0 / 0';
+
+            // Takım isimlerini güncelle
+            team1NameLabel.textContent = `🟢 ${state.team1Name}`;
+            team2NameLabel.textContent = `🟣 ${state.team2Name}`;
 
             updateUI();
         }
@@ -1109,14 +1025,36 @@
         });
 
         btnReset.addEventListener('click', resetGame);
-
         btnCorrect.addEventListener('click', correctGuess);
-
         btnPass.addEventListener('click', passWord);
-
         btnEndTurn.addEventListener('click', () => {
-            if (state.isTurnActive && !state.gameEnded) {
-                endTurn();
+            if (state.isTurnActive && !state.gameEnded) endTurn();
+        });
+
+        // Ayar inputları değiştiğinde anlık güncelle (sadece isimler için)
+        team1NameInput.addEventListener('input', () => {
+            if (!state.isPlaying) {
+                const val = team1NameInput.value.trim() || 'Takım 1';
+                state.team1Name = val;
+                team1NameLabel.textContent = `🟢 ${val}`;
+            }
+        });
+        team2NameInput.addEventListener('input', () => {
+            if (!state.isPlaying) {
+                const val = team2NameInput.value.trim() || 'Takım 2';
+                state.team2Name = val;
+                team2NameLabel.textContent = `🟣 ${val}`;
+            }
+        });
+        timeInput.addEventListener('change', () => {
+            let t = parseInt(timeInput.value, 10);
+            if (isNaN(t) || t < 10) t = 60;
+            if (t > 300) t = 300;
+            timeInput.value = t;
+            if (!state.isPlaying) {
+                state.maxTime = t;
+                state.timeLeft = t;
+                timerDisplay.textContent = `⏱ ${t}`;
             }
         });
 
@@ -1138,14 +1076,9 @@
         //  7.  BAŞLANGIÇ
         // ═══════════════════════════════════════════════════════════════
 
-        // Başlangıç durumu
         resetGame();
-
-        // Konsola yardım
-        console.log('🎵 Kelime Tahmin Oyunu');
-        console.log('Kısayollar: → Doğru, ← Geç, E Turu Bitir, R Oyunu Başlat/Sıfırla');
-        console.log(`📚 ${WORD_POOL.length} kelime yüklendi.`);
+        console.log(`🎵 Kelime Tahmin · Ayarlı · ${WORD_POOL.length} kelime yüklendi.`);
+        console.log('Kısayollar: → Doğru, ← Geç, E Turu Bitir, R Başlat/Sıfırla');
     </script>
-
 </body>
 </html>
