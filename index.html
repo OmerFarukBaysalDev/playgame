@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎵 Kelime Tahmin Oyunu · Ayarlı</title>
+    <title>🎵 Kelime Tahmin · Sürekli Oyun</title>
     <style>
         /* ─── RESET & BASE ─── */
         * {
@@ -29,6 +29,7 @@
             padding: 28px 24px 32px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.04);
             backdrop-filter: blur(2px);
+            position: relative;
         }
 
         /* ─── HEADER ─── */
@@ -62,7 +63,7 @@
             border: 1px solid rgba(255,255,255,0.06);
         }
 
-        /* ─── AYARLAR ─── */
+        /* ─── SETTINGS ─── */
         .settings {
             background: rgba(0,0,0,0.25);
             border-radius: 20px;
@@ -261,7 +262,7 @@
             font-weight: 500;
         }
 
-        /* ─── BUTTONS ─── */
+        /* ─── ACTION BUTTONS ─── */
         .action-buttons {
             display: flex;
             gap: 14px;
@@ -323,8 +324,19 @@
             box-shadow: 0 8px 32px rgba(214,48,49,0.35);
             transform: translateY(-2px);
         }
+        .btn-start-turn {
+            background: linear-gradient(135deg, #f9d976, #f39b7b);
+            color: #141a2b;
+            box-shadow: 0 6px 24px rgba(249,217,118,0.25);
+            flex: 0.8;
+            min-width: 140px;
+        }
+        .btn-start-turn:hover:not(:disabled) {
+            box-shadow: 0 8px 32px rgba(249,217,118,0.4);
+            transform: translateY(-2px);
+        }
 
-        /* ─── CONTROLS ─── */
+        /* ─── GAME CONTROLS ─── */
         .game-controls {
             display: flex;
             gap: 12px;
@@ -362,37 +374,66 @@
             color: #fff;
         }
 
-        /* ─── WINNER OVERLAY ─── */
-        .winner-overlay {
+        /* ─── POPUP / OVERLAY ─── */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
             display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .popup-overlay.show {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .popup-box {
+            background: #1a2140;
+            border-radius: 40px;
+            padding: 36px 40px 32px;
+            max-width: 400px;
+            width: 100%;
             text-align: center;
-            padding: 18px 12px 8px;
-            border-radius: 24px;
-            background: rgba(0,0,0,0.3);
-            margin-top: 6px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
         }
-        .winner-overlay.show {
-            display: block;
-            animation: fadeSlideUp 0.6s ease;
+        .popup-box .icon {
+            font-size: 56px;
+            margin-bottom: 6px;
         }
-        @keyframes fadeSlideUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .winner-overlay .trophy { font-size: 48px; margin-bottom: 4px; }
-        .winner-overlay .winner-text {
-            font-size: 26px;
+        .popup-box h2 {
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #f9d976, #f39b7b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #f9d976;
+            margin-bottom: 6px;
         }
-        .winner-overlay .winner-score {
+        .popup-box p {
+            color: #a8b2d1;
             font-size: 16px;
-            color: #8892b0;
-            margin-top: 2px;
+            margin-bottom: 22px;
+        }
+        .popup-box button {
+            background: linear-gradient(135deg, #f9d976, #f39b7b);
+            color: #141a2b;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .popup-box button:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 30px rgba(249,217,118,0.3);
         }
 
         /* ─── RESPONSIVE ─── */
@@ -409,11 +450,12 @@
             .word-display .word { font-size: 34px; }
             .word-display { padding: 22px 12px; min-height: 100px; }
             .action-buttons button { font-size: 15px; padding: 14px 10px; min-width: 80px; }
-            .btn-endturn { flex: 0.5; min-width: 60px; }
+            .btn-endturn, .btn-start-turn { flex: 0.5; min-width: 60px; }
             .stats-bar { font-size: 12px; }
             .stats-bar .timer { font-size: 17px; }
             .game-controls button { padding: 10px 22px; font-size: 14px; }
-            .winner-overlay .winner-text { font-size: 20px; }
+            .popup-box { padding: 28px 20px; }
+            .popup-box h2 { font-size: 24px; }
         }
         @media (max-width: 400px) {
             .scoreboard { flex-direction: column; gap: 8px; }
@@ -431,14 +473,25 @@
     </style>
 </head>
 <body>
+
+    <!-- POPUP (Süre Doldu) -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-box">
+            <div class="icon">⏰</div>
+            <h2>Süre Doldu!</h2>
+            <p id="popupMessage">Tur tamamlandı. Sıra diğer takımda.</p>
+            <button id="popupButton">Tamam</button>
+        </div>
+    </div>
+
     <div class="game-container" id="app">
         <!-- HEADER -->
         <div class="header">
             <h1><span>🎵</span> Kelime Tahmin</h1>
-            <span class="sub">🎧 müzikle · iki takım</span>
+            <span class="sub">♾️ sonsuz tur</span>
         </div>
 
-        <!-- AYARLAR -->
+        <!-- SETTINGS -->
         <div class="settings" id="settingsPanel">
             <label>
                 ⏱ Süre (sn)
@@ -487,13 +540,7 @@
             <button class="btn-correct" id="btnCorrect" disabled>✅ Doğru</button>
             <button class="btn-pass" id="btnPass" disabled>⏭ Geç</button>
             <button class="btn-endturn" id="btnEndTurn" disabled>⏹ Turu Bitir</button>
-        </div>
-
-        <!-- WINNER -->
-        <div class="winner-overlay" id="winnerOverlay">
-            <div class="trophy">🏆</div>
-            <div class="winner-text" id="winnerText">Kazanan Takım!</div>
-            <div class="winner-score" id="winnerScore">Skor: 0</div>
+            <button class="btn-start-turn" id="btnStartTurn" disabled>▶️ Tur Başlasın</button>
         </div>
 
         <!-- CONTROLS -->
@@ -505,7 +552,7 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════
-        //  1.  KELİME HAVUZU  (1000+  yaygın Türkçe kelime)
+        //  1.  KELİME HAVUZU  (1000+)
         // ═══════════════════════════════════════════════════════════════
 
         const WORD_POOL = [
@@ -670,21 +717,21 @@
         // ═══════════════════════════════════════════════════════════════
 
         const state = {
-            words: [],
             currentIndex: 0,
             team1Score: 0,
             team2Score: 0,
             currentTeam: 1,
             isPlaying: false,
-            isTurnActive: false,
+            isTurnActive: false,      // süre aktif mi?
+            isWaitingForStart: false, // tur başlamayı bekliyor mu?
             timer: null,
             timeLeft: 60,
             maxTime: 60,
-            totalWords: 0,
             turnWords: [],
-            gameEnded: false,
+            totalWords: 0,
             team1Name: 'Takım 1',
             team2Name: 'Takım 2',
+            popupShown: false,        // popup açık mı?
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -706,14 +753,15 @@
         const btnCorrect = $('btnCorrect');
         const btnPass = $('btnPass');
         const btnEndTurn = $('btnEndTurn');
+        const btnStartTurn = $('btnStartTurn');
         const btnStart = $('btnStart');
         const btnReset = $('btnReset');
-        const winnerOverlay = $('winnerOverlay');
-        const winnerText = $('winnerText');
-        const winnerScore = $('winnerScore');
         const timeInput = $('timeInput');
         const team1NameInput = $('team1NameInput');
         const team2NameInput = $('team2NameInput');
+        const popupOverlay = $('popupOverlay');
+        const popupMessage = $('popupMessage');
+        const popupButton = $('popupButton');
 
         // ═══════════════════════════════════════════════════════════════
         //  4.  YARDIMCI FONKSİYONLAR
@@ -735,7 +783,6 @@
             return Math.max(0, Math.ceil(seconds));
         }
 
-        // ─ Ayarları oku ve state'e yaz ─
         function loadSettings() {
             let t = parseInt(timeInput.value, 10);
             if (isNaN(t) || t < 10) t = 60;
@@ -763,108 +810,104 @@
             team1Card.classList.toggle('active-team', state.currentTeam === 1);
             team2Card.classList.toggle('active-team', state.currentTeam === 2);
 
-            const canAct = state.isPlaying && state.isTurnActive && !state.gameEnded;
+            // Butonlar
+            const canAct = state.isPlaying && state.isTurnActive && !state.isWaitingForStart && !state.popupShown;
             btnCorrect.disabled = !canAct || state.currentIndex >= state.turnWords.length;
             btnPass.disabled = !canAct || state.currentIndex >= state.turnWords.length;
             btnEndTurn.disabled = !canAct;
+
+            // Tur başlat butonu: sadece bekleme modunda ve oyun aktifken
+            btnStartTurn.disabled = !(state.isPlaying && state.isWaitingForStart && !state.popupShown);
+
+            // Kelime gösterimi
+            const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
 
             if (state.isPlaying && state.isTurnActive && state.currentIndex < state.turnWords.length) {
                 const word = state.turnWords[state.currentIndex];
                 wordText.textContent = word;
                 wordText.className = 'word';
                 categoryTag.textContent = getCategory(word);
-                const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
                 turnLabel.textContent = `🟢 ${teamName} açıklıyor...`;
+            } else if (state.isPlaying && state.isWaitingForStart) {
+                wordText.textContent = `⏳ ${teamName} hazır!`;
+                wordText.className = 'word hint';
+                categoryTag.textContent = '▶️ Tur başlasın';
+                turnLabel.textContent = `🔵 Sıra ${teamName}'de`;
             } else if (state.isPlaying && state.isTurnActive && state.currentIndex >= state.turnWords.length) {
                 wordText.textContent = '🎉 Tüm kelimeler tamam!';
                 wordText.className = 'word hint';
                 categoryTag.textContent = '✅ Tur bitti';
-                turnLabel.textContent = `🏁 ${state.currentTeam === 1 ? state.team1Name : state.team2Name} hazır!`;
+                turnLabel.textContent = `🏁 ${teamName} hazır!`;
                 btnCorrect.disabled = true;
                 btnPass.disabled = true;
-            } else if (state.gameEnded) {
-                // kazanan overlay gösteriliyor
-            } else {
-                wordText.textContent = state.isPlaying ? '⏳ Bekleyin...' : '🎯 Başlamak için';
+            } else if (!state.isPlaying) {
+                wordText.textContent = '🎯 Başlamak için';
                 wordText.className = 'word hint';
-                categoryTag.textContent = state.isPlaying ? '⏳' : '🎯 oyuna basla';
-                turnLabel.textContent = state.isPlaying ? '⏳ Tur hazırlanıyor...' : '🔵 Hazır mısınız?';
+                categoryTag.textContent = '🚀 oyuna basla';
+                turnLabel.textContent = '🔵 Hazır mısınız?';
+            } else {
+                // ara durum
+                wordText.textContent = '⏳ Bekleyin...';
+                wordText.className = 'word hint';
+                categoryTag.textContent = '⏳';
+                turnLabel.textContent = '⏳';
             }
 
+            // Timer
             timerDisplay.textContent = `⏱ ${formatTime(state.timeLeft)}`;
-            timerDisplay.classList.toggle('warning', state.timeLeft <= 10 && state.isPlaying);
+            timerDisplay.classList.toggle('warning', state.timeLeft <= 10 && state.isTurnActive && !state.isWaitingForStart);
 
+            // Kelime sayacı
             const total = state.turnWords.length;
             const current = Math.min(state.currentIndex + 1, total);
             wordCounter.textContent = `📖 ${total > 0 ? current : 0} / ${total}`;
-
-            if (state.gameEnded) {
-                winnerOverlay.classList.add('show');
-            } else {
-                winnerOverlay.classList.remove('show');
-            }
         }
 
-        function startGame() {
-            stopTimer();
-            state.gameEnded = false;
-            state.team1Score = 0;
-            state.team2Score = 0;
-            state.currentTeam = 1;
-            state.currentIndex = 0;
-            state.isPlaying = true;
-            state.isTurnActive = false;
-
-            // Ayarları yükle
-            loadSettings();
-
-            const raw = getRandomWords(20);
-            state.turnWords = raw;
-            state.totalWords = raw.length;
-            state.currentIndex = 0;
-            state.timeLeft = state.maxTime;
-
-            winnerOverlay.classList.remove('show');
-            btnStart.textContent = '⏳ Oynanıyor...';
-            btnStart.disabled = true;
-
-            startTurn();
-        }
-
-        function startTurn() {
-            if (state.gameEnded) return;
-            stopTimer();
-
-            if (state.currentIndex >= state.turnWords.length) {
-                switchTeam();
-                return;
-            }
-
-            state.isTurnActive = true;
-            state.timeLeft = state.maxTime;
-
-            state.timer = setInterval(() => {
-                state.timeLeft -= 0.3;
-                if (state.timeLeft <= 0) {
-                    state.timeLeft = 0;
-                    updateUI();
-                    endTurn();
-                } else {
-                    updateUI();
-                }
-            }, 300);
-
+        // ─ Popup göster ─
+        function showPopup(message) {
+            state.popupShown = true;
+            popupMessage.textContent = message || 'Süre doldu! Sıra diğer takımda.';
+            popupOverlay.classList.add('show');
             updateUI();
         }
 
-        function switchTeam() {
+        function hidePopup() {
+            popupOverlay.classList.remove('show');
+            state.popupShown = false;
+            // Popup kapatıldıktan sonra sırayı geç
+            if (state.isPlaying) {
+                // Eğer turn aktif değilse zaten beklemededir, ama süre dolduysa turn aktif olabilir.
+                // Her durumda sırayı geçelim ve bekleme moduna alalım.
+                stopTimer();
+                state.isTurnActive = false;
+                state.isWaitingForStart = true;
+                // Yeni takım ve kelimeler hazırlanır
+                prepareNextTeam();
+                updateUI();
+            }
+        }
+
+        // ─ Sıradaki takımı hazırla (kelimeleri yenile, bekleme modu) ─
+        function prepareNextTeam() {
+            // Takımı değiştir
             state.currentTeam = state.currentTeam === 1 ? 2 : 1;
             state.currentIndex = 0;
             const raw = getRandomWords(20);
             state.turnWords = raw;
             state.totalWords = raw.length;
             state.timeLeft = state.maxTime;
+            state.isTurnActive = false;
+            state.isWaitingForStart = true;
+            updateUI();
+        }
+
+        // ─ Turu başlat (süreyi başlat) ─
+        function startTurnTimer() {
+            if (!state.isPlaying || !state.isWaitingForStart || state.popupShown) return;
+
+            state.isWaitingForStart = false;
             state.isTurnActive = true;
+            state.timeLeft = state.maxTime;
 
             stopTimer();
             state.timer = setInterval(() => {
@@ -872,7 +915,10 @@
                 if (state.timeLeft <= 0) {
                     state.timeLeft = 0;
                     updateUI();
-                    endTurn();
+                    // Süre bitti, popup göster
+                    const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
+                    showPopup(`⏰ Süre doldu! ${teamName} turunu tamamladı.`);
+                    // Timer durdurulur, popup kapanınca sıra geçer
                 } else {
                     updateUI();
                 }
@@ -881,8 +927,34 @@
             updateUI();
         }
 
+        // ─ Oyunu başlat (ilk tur) ─
+        function startGame() {
+            stopTimer();
+            state.team1Score = 0;
+            state.team2Score = 0;
+            state.currentTeam = 1;
+            state.currentIndex = 0;
+            state.isPlaying = true;
+            state.isTurnActive = false;
+            state.isWaitingForStart = true;
+            state.popupShown = false;
+            popupOverlay.classList.remove('show');
+
+            loadSettings();
+
+            const raw = getRandomWords(20);
+            state.turnWords = raw;
+            state.totalWords = raw.length;
+            state.timeLeft = state.maxTime;
+
+            btnStart.textContent = '⏳ Oynanıyor...';
+            btnStart.disabled = true;
+            updateUI();
+        }
+
+        // ─ Doğru tahmin ─
         function correctGuess() {
-            if (!state.isTurnActive || state.gameEnded) return;
+            if (!state.isPlaying || !state.isTurnActive || state.isWaitingForStart || state.popupShown) return;
             if (state.currentIndex >= state.turnWords.length) return;
 
             if (state.currentTeam === 1) state.team1Score += 1;
@@ -891,81 +963,40 @@
             state.currentIndex += 1;
 
             if (state.currentIndex >= state.turnWords.length) {
-                endTurn();
+                // Tüm kelimeler bitti, turu bitir
+                stopTimer();
+                state.isTurnActive = false;
+                const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
+                showPopup(`🎉 ${teamName} tüm kelimeleri tamamladı!`);
+                // Popup kapanınca sıra geçer
             } else {
                 updateUI();
             }
         }
 
+        // ─ Geç ─
         function passWord() {
-            if (!state.isTurnActive || state.gameEnded) return;
+            if (!state.isPlaying || !state.isTurnActive || state.isWaitingForStart || state.popupShown) return;
             if (state.currentIndex >= state.turnWords.length) return;
 
             state.currentIndex += 1;
             if (state.currentIndex >= state.turnWords.length) {
-                endTurn();
-            } else {
-                updateUI();
-            }
-        }
-
-        function endTurn() {
-            if (state.gameEnded) return;
-            stopTimer();
-            state.isTurnActive = false;
-            updateUI();
-
-            if (state.currentTeam === 1) {
-                state.currentTeam = 2;
-                state.currentIndex = 0;
-                const raw = getRandomWords(20);
-                state.turnWords = raw;
-                state.totalWords = raw.length;
-                state.timeLeft = state.maxTime;
-                state.isTurnActive = true;
-
                 stopTimer();
-                state.timer = setInterval(() => {
-                    state.timeLeft -= 0.3;
-                    if (state.timeLeft <= 0) {
-                        state.timeLeft = 0;
-                        updateUI();
-                        endTurn();
-                    } else {
-                        updateUI();
-                    }
-                }, 300);
-                updateUI();
+                state.isTurnActive = false;
+                const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
+                showPopup(`🎉 ${teamName} tüm kelimeleri tamamladı!`);
             } else {
-                endGame();
+                updateUI();
             }
         }
 
-        function endGame() {
+        // ─ Turu manuel bitir ─
+        function endTurnManually() {
+            if (!state.isPlaying || !state.isTurnActive || state.isWaitingForStart || state.popupShown) return;
             stopTimer();
-            state.isPlaying = false;
             state.isTurnActive = false;
-            state.gameEnded = true;
-            btnStart.textContent = '🔄 Tekrar Oyna';
-            btnStart.disabled = false;
-
-            let winner = '';
-            if (state.team1Score > state.team2Score) {
-                winner = `🏆 ${state.team1Name} Kazandı!`;
-            } else if (state.team2Score > state.team1Score) {
-                winner = `🏆 ${state.team2Name} Kazandı!`;
-            } else {
-                winner = '🤝 Beraberlik!';
-            }
-            winnerText.textContent = winner;
-            winnerScore.textContent = `${state.team1Name}: ${state.team1Score}  |  ${state.team2Name}: ${state.team2Score}`;
-            winnerOverlay.classList.add('show');
-
-            wordText.textContent = '🏁 Oyun Bitti';
-            wordText.className = 'word hint';
-            categoryTag.textContent = '🎯 Tebrikler!';
-            turnLabel.textContent = '🏆';
-            updateUI();
+            const teamName = state.currentTeam === 1 ? state.team1Name : state.team2Name;
+            showPopup(`⏹ ${teamName} turu manuel bitirdi.`);
         }
 
         function stopTimer() {
@@ -975,26 +1006,29 @@
             }
         }
 
+        // ─ Sıfırla ─
         function resetGame() {
             stopTimer();
             state.isPlaying = false;
             state.isTurnActive = false;
-            state.gameEnded = false;
+            state.isWaitingForStart = false;
+            state.popupShown = false;
+            popupOverlay.classList.remove('show');
             state.team1Score = 0;
             state.team2Score = 0;
             state.currentTeam = 1;
             state.currentIndex = 0;
             state.turnWords = [];
             state.totalWords = 0;
-            loadSettings(); // ayarları tazele
+            loadSettings();
             state.timeLeft = state.maxTime;
 
-            winnerOverlay.classList.remove('show');
             btnStart.textContent = '🚀 OYUNU BAŞLAT';
             btnStart.disabled = false;
             btnCorrect.disabled = true;
             btnPass.disabled = true;
             btnEndTurn.disabled = true;
+            btnStartTurn.disabled = true;
 
             wordText.textContent = 'Başlamak için';
             wordText.className = 'word hint';
@@ -1004,10 +1038,8 @@
             timerDisplay.classList.remove('warning');
             wordCounter.textContent = '📖 0 / 0';
 
-            // Takım isimlerini güncelle
             team1NameLabel.textContent = `🟢 ${state.team1Name}`;
             team2NameLabel.textContent = `🟣 ${state.team2Name}`;
-
             updateUI();
         }
 
@@ -1016,22 +1048,22 @@
         // ═══════════════════════════════════════════════════════════════
 
         btnStart.addEventListener('click', () => {
-            if (state.gameEnded) {
-                resetGame();
-                setTimeout(() => startGame(), 300);
-            } else if (!state.isPlaying) {
+            if (!state.isPlaying) {
                 startGame();
             }
         });
 
         btnReset.addEventListener('click', resetGame);
+
         btnCorrect.addEventListener('click', correctGuess);
         btnPass.addEventListener('click', passWord);
-        btnEndTurn.addEventListener('click', () => {
-            if (state.isTurnActive && !state.gameEnded) endTurn();
-        });
+        btnEndTurn.addEventListener('click', endTurnManually);
 
-        // Ayar inputları değiştiğinde anlık güncelle (sadece isimler için)
+        btnStartTurn.addEventListener('click', startTurnTimer);
+
+        popupButton.addEventListener('click', hidePopup);
+
+        // Ayar inputları (sadece oyun durmadığında etkili)
         team1NameInput.addEventListener('input', () => {
             if (!state.isPlaying) {
                 const val = team1NameInput.value.trim() || 'Takım 1';
@@ -1067,6 +1099,8 @@
                 if (!btnPass.disabled) btnPass.click();
             } else if (e.key === 'e' || e.key === 'E') {
                 if (!btnEndTurn.disabled) btnEndTurn.click();
+            } else if (e.key === 's' || e.key === 'S') {
+                if (!btnStartTurn.disabled) btnStartTurn.click();
             } else if (e.key === 'r' || e.key === 'R') {
                 if (!btnStart.disabled) btnStart.click();
             }
@@ -1077,8 +1111,8 @@
         // ═══════════════════════════════════════════════════════════════
 
         resetGame();
-        console.log(`🎵 Kelime Tahmin · Ayarlı · ${WORD_POOL.length} kelime yüklendi.`);
-        console.log('Kısayollar: → Doğru, ← Geç, E Turu Bitir, R Başlat/Sıfırla');
+        console.log(`🎵 Kelime Tahmin · Sonsuz Tur · ${WORD_POOL.length} kelime yüklendi.`);
+        console.log('Kısayollar: → Doğru, ← Geç, E Turu Bitir, S Tur Başlasın, R Oyunu Başlat');
     </script>
 </body>
 </html>
